@@ -10,6 +10,10 @@ import fp.excepciones.OperadorIncorrectoExcepcion;
 import fp.excepciones.ParentesisDesbalanceadosExcepcion;
 
 public class Expresion {
+	public Expresion() {
+		operadores=new Stack<Character>();
+		salida=new LinkedList<MathChar>();
+	}
 	public Queue<MathChar> getSalida() {
 		return salida;
 	}
@@ -26,10 +30,6 @@ public class Expresion {
 	private Stack<Character> operadores;
 	
 	
-	public Expresion() {
-		operadores=new Stack<Character>();
-		salida=new LinkedList<MathChar>();
-	}
 	/**
 	 * Transforma una expresion infija, en una postfija
 	 * 
