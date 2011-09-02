@@ -75,7 +75,8 @@ public class Ventana extends JFrame implements  ActionListener,ChangeListener,Mo
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		parametros.getExpresion().postFija(parametros.getTfExpresion().getText());
+		parametros.getExpresion().setCadena(parametros.getTfExpresion().getText());
+		parametros.getExpresion().postFija();
 		grafica.repaint();
 		
 	}
