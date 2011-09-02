@@ -6,11 +6,29 @@ import java.util.Queue;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+import fp.excepciones.ErrorSintacticoExcepcion;
 import fp.excepciones.OperadorIncorrectoExcepcion;
 import fp.excepciones.ParentesisDesbalanceadosExcepcion;
 
 public class Expresion {
+	
+	private String cadena;
+	public String getCadena() {
+		return cadena;
+	}
+	public void setCadena(String cadena) {
+		this.cadena = cadena;
+	}
+	private Queue<MathChar> salida;
+	private Stack<Character> operadores;
+	
+	
 	public Expresion() {
+		operadores=new Stack<Character>();
+		salida=new LinkedList<MathChar>();
+	}
+	public Expresion(String cadena) {
+		this.cadena=cadena;
 		operadores=new Stack<Character>();
 		salida=new LinkedList<MathChar>();
 	}
@@ -30,16 +48,15 @@ public class Expresion {
 	public void setOperadores(Stack<Character> operadores) {
 		this.operadores = operadores;
 	}
-	private Queue<MathChar> salida;
-	private Stack<Character> operadores;
+	
 	
 	
 	/**
 	 * Transforma una expresion infija, en una postfija
 	 * 
 	 */
-	public void postFija(String infija) {
-		StringTokenizer strtok=new StringTokenizer(infija,"+-*/()^",true);
+	public void postFija() {
+		StringTokenizer strtok=new StringTokenizer(cadena,"+-*/()^",true);
 		boolean error=false;
 		String token;
 		
@@ -50,6 +67,7 @@ public class Expresion {
 			token=strtok.nextToken();
 			switch (MathChar.tipoCaracter(token)) {
 				case MathChar.NUM:salida.add(new MathChar(token));break;
+				case MathChar.SIGNO:nuevoOperador(token.charAt(0));break;
 				case MathChar.OPER:nuevoOperador(token.charAt(0));break;
 				case MathChar.PAR_IZ:operadores.push(token.charAt(0));break;
 				case MathChar.PAR_DER:parentesisDerecho(token.charAt(0));break;
@@ -184,93 +202,21 @@ public class Expresion {
 		}
 
 	}
+	public void mostrarInfija() {
+		System.out.println(cadena);
+
+	}
 	/**
 	 * Comprueba que la sintaxis es correcta
-	 * @param s
+	 * @param string
 	 * @return
+	 * @throws ErrorSintacticoExcepcion 
 	 * @throws ParentesisDesbalanceadosExcepcion
 	 * @throws OperadorIncorrectoExcepcion 
 	 */
-	public boolean sintaxis(String s) throws ParentesisDesbalanceadosExcepcion, OperadorIncorrectoExcepcion{
-		StringTokenizer strtok=new StringTokenizer(s,"+-*/()^",true);
-		String token;
-		StringBuffer sb=new StringBuffer(s);
-		int parentesis=0, indice=0;
-		
-		while(strtok.hasMoreTokens()){
-					
-					token=strtok.nextToken();
-					switch (MathChar.tipoCaracter(token)) {
-						case MathChar.NUM:break;	//Numero, correcto
-						case MathChar.SIGNO: signosConcatenados(sb, indice);break;
-						case MathChar.OPER:nuevoOperador(token.charAt(0));break;
-						case MathChar.PAR_IZ:operadores.push(token.charAt(0));break;
-						case MathChar.PAR_DER:parentesisDerecho(token.charAt(0));break;
-						case MathChar.VAR:salida.add(new MathChar(token));break;
-						case MathChar.CONST:salida.add(new MathChar(token));break;
-		
-					default:System.err.println("Error de sintaxis");break;
-					}
-					indice+=token.length();
-					
-				}
-		
-		
-		int i = 0;
-		if(MathChar.tipoCaracter(s)==MathChar.OPER){//Si es un signo -
-			if(s.charAt(i)=='-'){
-				sb.append('0');	//Añadimos un 0 para hacer consistente la expresion
-				sb.append(s.charAt(i));
-			}else
-			throw new OperadorIncorrectoExcepcion();
-		}
-			
-		
-		for (; i < s.length(); i++) {
-			if(s.charAt(i)=='('){
-				parentesis++;
-				
-			}
-			if(s.charAt(i)==')')
-				parentesis--;
-			
-		}
-		
-		if(parentesis!=0)
-			throw new ParentesisDesbalanceadosExcepcion();
-		return true;
-		
+	public void analizarSintaxis() throws ParentesisDesbalanceadosExcepcion, OperadorIncorrectoExcepcion, ErrorSintacticoExcepcion {
+		cadena=Sintaxis.analizar(cadena);
+
 	}
 	
-	private void signosConcatenados(StringBuffer s, int j) {
-		int signosMenos=0;
-		char signoFinal;
-		
-		for (int i = j; i < s.length(); i++) {	//Contar signos
-			if(s.charAt(i)=='-'){	//Signo -
-				signosMenos++;
-				continue;
-			}
-			if(s.charAt(i)=='+'){	//Signo +
-				continue;
-			}
-			break;
-			
-		}
-		
-		
-		if(signosMenos%2==1)signoFinal='-';	//Numero impar de signos -
-		else signoFinal='+';				//Numero par de signos -
-		
-		
-		for (int i = j; i < s.length()-1; i++) {
-			if((s.charAt(j+1)!='-')||(s.charAt(j+1)!='+')){ //si el siguiente carcater no es + ni -
-				s.setCharAt(j, signoFinal);	//Poner el signo definitivo
-				break;
-			}
-			s.deleteCharAt(j);	//borrar signo
-		}
-		
-	
-	}
 }
