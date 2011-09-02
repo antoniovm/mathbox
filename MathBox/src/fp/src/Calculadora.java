@@ -29,7 +29,7 @@ public class Calculadora {
 				e.printStackTrace();
 				break;
 			}
-			expresion.postFija();
+			expresion.postFija();	//<--------------------por aquii!
 			expresion.mostrarInfija();
 			System.out.println("Introduxca un valor para evaluar en x");
 			System.out.println(expresion.evaluar(Double.parseDouble(leer())));
