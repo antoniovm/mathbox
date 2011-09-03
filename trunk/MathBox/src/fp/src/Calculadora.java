@@ -31,6 +31,7 @@ public class Calculadora {
 			}
 			expresion.postFija();	//<--------------------por aquii!
 			expresion.mostrarInfija();
+			expresion.mostrarPostfija();
 			System.out.println("Introduxca un valor para evaluar en x");
 			System.out.println(expresion.evaluar(Double.parseDouble(leer())));
 		} while (!leido.equals("salir"));
