@@ -308,40 +308,9 @@ public class Expresion {
 			return -resultado;
 		return resultado;
 	}
-	private double evaluar(double  a , double b, Queue<MathChar> aux) {
-		double c;
-		
-		if(aux.peek().getTipo()!=MathChar.OPER){
-			c=Double.parseDouble(aux.poll().toString());
-			b=evaluar(b, c, aux);
-		}
-			
-		
-		
-			
-			c=aux.poll().toString().charAt(0);
-			
-			switch ((char)c) {
-				case '+': return(a+b);
-				case '-': return(a-b);
-				case '*': return(a*b);
-				case '/': return(a/b);
-				case '^': 
-					double solucion=1;
-					for (int i = 0; i < b; i++) {
-						solucion*=a;
-				} 
-					return solucion;
-		
-		
-				default:	System.err.println("Error de sintaxis");
-			
-		}
-			return -1;
-		
-	}
+	
 	public void mostrarPostfija() {
-		for (Iterator iterator = salida.iterator(); iterator.hasNext();) {
+		for (Iterator<MathChar> iterator = salida.iterator(); iterator.hasNext();) {
 			System.out.print(iterator.next()+" ");
 			
 		}
