@@ -6,8 +6,20 @@ public class MathChar {
 			VAR = 4, AP = 5, CONST = 6, SIGNO = 7;
 	
 	private String caracter;
-	int tipo;
+	private int tipo;
 	
+	public String getCaracter() {
+		return caracter;
+	}
+
+	public void setCaracter(String caracter) {
+		this.caracter = caracter;
+	}
+
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
+	}
+
 	public MathChar() {
 		caracter="";
 		tipo=-1;
