@@ -14,6 +14,7 @@ public class MathChar {
 
 	public void setCaracter(String caracter) {
 		this.caracter = caracter;
+		tipo=tipoCaracter(caracter);
 	}
 
 	public void setTipo(int tipo) {
@@ -39,18 +40,23 @@ public class MathChar {
 	public static int tipoCaracter(String token) {
 		
 		if(token.length()==1){	//caracteres unicos
-			if(token.charAt(0)=='(')
-				return PAR_IZ;
-			if(token.charAt(0)==')')
-				return PAR_DER;
-			if(token.charAt(0)=='x')
-				return VAR;
-			if((token.charAt(0)=='*')||(token.charAt(0)=='/')||(token.charAt(0)=='^'))
-				return OPER;
-			if((token.charAt(0)=='+')||(token.charAt(0)=='-'))
-				return SIGNO;
+			switch (token.charAt(0)) {
+				case '(': return PAR_IZ;
+				case ')': return PAR_DER;
+				case 'x': return VAR;
+				case '/': 
+				case '^': 
+				case '*': return OPER;
+				case '+':
+				case '-': return SIGNO;
+				
+	
+				default:
+					break;
+			}
 		}
 		
+
 		
 		//cadena numerica
 		if(Sintaxis.comprobarNumero(token)) return NUM;

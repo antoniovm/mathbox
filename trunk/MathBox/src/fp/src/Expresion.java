@@ -9,29 +9,33 @@ import java.util.StringTokenizer;
 import fp.excepciones.ErrorSintacticoExcepcion;
 import fp.excepciones.OperadorIncorrectoExcepcion;
 import fp.excepciones.ParentesisDesbalanceadosExcepcion;
+import fp.excepciones.ValorNoSoportadoException;
 
 public class Expresion {
 	
+	/**
+	 * Cadena de entrada
+	 */
 	private String cadena;
+	private Queue<MathChar> salida;
+	private Stack<MathChar> operadores;
+	
+	
 	public String getCadena() {
 		return cadena;
 	}
-	public void setCadena(String cadena) {
+	public void setCadena(String cadena) throws ParentesisDesbalanceadosExcepcion, OperadorIncorrectoExcepcion, ErrorSintacticoExcepcion {
 		this.cadena = cadena;
+		postFija();
 	}
-	private Queue<MathChar> salida;
-	private Stack<MathChar> operadores;
+	
 	
 	
 	public Expresion() {
 		operadores=new Stack<MathChar>();
 		salida=new LinkedList<MathChar>();
 	}
-	public Expresion(String cadena) {
-		this.cadena=cadena;
-		operadores=new Stack<MathChar>();
-		salida=new LinkedList<MathChar>();
-	}
+
 	/**
 	 * Cadena de salida
 	 * @return
@@ -53,14 +57,19 @@ public class Expresion {
 	
 	/**
 	 * Transforma una expresion infija, en una postfija
+	 * @throws ErrorSintacticoExcepcion 
+	 * @throws OperadorIncorrectoExcepcion 
+	 * @throws ParentesisDesbalanceadosExcepcion 
 	 * 
 	 */
-	public void postFija() {
+	public void postFija() throws ParentesisDesbalanceadosExcepcion, OperadorIncorrectoExcepcion, ErrorSintacticoExcepcion {
 		StringTokenizer strtok=new StringTokenizer(cadena,"+*/()^",true);
 		boolean error=false;
 		String token;
 		
 		salida.clear();
+		
+		Sintaxis.analizar(cadena);
 		
 		while(strtok.hasMoreTokens()&&!error){
 			
@@ -144,13 +153,23 @@ public class Expresion {
 		return -1;
 	}
 	
-	public double evaluar(double valor){
+	/**
+	 * Evalua la expresion en la variable para un valor dado
+	 * @param valor
+	 * @return
+	 * @throws ErrorSintacticoExcepcion 
+	 * @throws ValorNoSoportadoException 
+	 */
+	
+	public double evaluar(MathChar valor) throws ErrorSintacticoExcepcion, ValorNoSoportadoException{
 		Queue<MathChar> aux=new LinkedList<MathChar>();
 		Stack<MathChar> pila=new Stack<MathChar>();	//Pila para la resolucion de operaciones anidadas
 		
 		
 		double a,b;	//Pareja de operandos
 		
+		if(!(valor.getTipo()==MathChar.NUM || valor.getTipo()==MathChar.CONST))
+			throw new ValorNoSoportadoException();
 		
 		for (Iterator<MathChar> iterator = salida.iterator(); iterator.hasNext();) {	//Evaluar en x
 			MathChar token =  iterator.next();
@@ -241,22 +260,23 @@ public class Expresion {
 	 * @param op1
 	 * @param operador
 	 * @return
+	 * @throws ErrorSintacticoExcepcion 
 	 */
-	private double operar(MathChar op2, MathChar op1, MathChar operador) {
+	private double operar(MathChar op2, MathChar op1, MathChar operador) throws ErrorSintacticoExcepcion {
 		double a = Double.parseDouble(op1.toString());
 		double b = Double.parseDouble(op2.toString());
 		
 		switch (operador.toString().charAt(0)) {
-		case '+': return(a+b);
-		case '-': return(a-b);
-		case '*': return(a*b);
-		case '/': return(a/b);
-		case '^': return Math.pow(a, b);
-		
-		default:	System.err.println("Error de sintaxis");
+			case '+': return(a+b);
+			case '-': return(a-b);
+			case '*': return(a*b);
+			case '/': return(a/b);
+			case '^': return Math.pow(a, b);
+			
+			default:	throw new ErrorSintacticoExcepcion();
 	
-}
-		return Double.MIN_VALUE;
+		}
+		//return Double.MIN_VALUE;
 	}
 	/**
 	 * Devuelve el resultado de la aplicacion indicada, al numero pasado por parametro
@@ -315,6 +335,8 @@ public class Expresion {
 			
 		}
 		System.out.println("");
+		
+		
 
 	}
 	public void mostrarInfija() {
