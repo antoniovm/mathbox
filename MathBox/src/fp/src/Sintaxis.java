@@ -1,6 +1,8 @@
 package fp.src;
 
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+
 import fp.excepciones.ErrorSintacticoExcepcion;
 import fp.excepciones.OperadorIncorrectoExcepcion;
 import fp.excepciones.ParentesisDesbalanceadosExcepcion;
@@ -58,15 +60,9 @@ public class Sintaxis {
 	 * @return true si es correco, false en caso contrario
 	 */
 	public static boolean comprobarNumero(String token) {
-		int i = 0;
-		if(token.charAt(0)=='-')	//Comprobar si es negativo 
-			i++;
-		for (; i < token.length(); i++) {
-			if(!(token.charAt(i)>='0'&&token.charAt(i)<='9')&&(token.charAt(i)!='.'))	//Si se sale de este rango ascii, no es un numero
-				return false;
-		}
-		return true;
-
+		//-233.44378745
+		return Pattern.matches("-??[0-9]+(.[0-9]+)", token);
+		
 	}
 	/**
 	 * Comprueba si la constante es correcta
@@ -74,18 +70,10 @@ public class Sintaxis {
 	 * @return	true si es correco, false en caso contrario
 	 */
 	public static boolean comprobarConstante(String token) {
-		switch (token.charAt(0)) {
-		case 'e':
-			return true;
-		case 'p':
-			if (token.equals("pi"))
-				return true;
-			break;
-
-		default:
-			break;
-		}
-		return false;
+		
+		return Pattern.matches("-??(e|pi)", token);
+		
+		
 	}
 	/**
 	 * Comprueba si la aplicacion es correcta
@@ -93,32 +81,8 @@ public class Sintaxis {
 	 * @return true si es correco, false en caso contrario
 	 */
 	public static boolean comprobarAplicacion(String token) {
-		if(token.charAt(0)=='-')	//Comprueba que la aplicacion sea negativa
-			token=token.substring(1);
-		switch (token.charAt(0)) {
-		case 'l':
-			if (token.equals("log") || token.equals("ln"))
-				return true;
-			break;
-		case 's':
-			if (token.equals("sen") || token.equals("sec"))
-				return true;
-			break;
-		case 'c':
-			if (token.equals("cos") || token.equals("cosec")
-					|| token.equals("cotan"))
-				return true;
-			break;
-		case 't':
-			if (token.equals("tan"))
-				return true;
-			break;
-
-		default:
-			break;
-
-		}
-		return false;
+		
+		return Pattern.matches("-??(log|ln|sen|sec|cos|cosec|cotan|tan)", token);
 
 	}
 	/**

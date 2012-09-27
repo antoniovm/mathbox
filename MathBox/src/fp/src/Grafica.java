@@ -7,6 +7,9 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
+import fp.excepciones.ErrorSintacticoExcepcion;
+import fp.excepciones.ValorNoSoportadoException;
+
 public class Grafica extends JPanel{
 	private int origenX, origenY;
 	private double x, y; 
@@ -48,13 +51,36 @@ public class Grafica extends JPanel{
 	private void pintarFuncion(Graphics g) {
 		if(!f.valida())
 			return;
+		MathChar mX = new MathChar();
+		MathChar mX2 = new MathChar();
 		
 		g.setColor(Color.black);
-		int y,y2,x,x2; 
+		int y = 0,y2 = 0,x,x2; 
 		for (x = origenX-getWidth(); x < getWidth()-origenX; x++) {
-			y=(int)(-f.f((double)x/(escalaX))*(escalaY));
+			mX.setCaracter((double)x/(escalaX)*(escalaY)+"");
+			
+			
+			try {
+				y=(int)(-f.f(mX));
+			} catch (ErrorSintacticoExcepcion e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ValorNoSoportadoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			x2=x+1;
-			y2=(int)(-f.f((double)x2/(escalaX))*(escalaY));
+			
+			mX2.setCaracter((double)x2/(escalaX)*(escalaY)+"");
+			try {
+				y2=(int)(-f.f(mX2));
+			} catch (ErrorSintacticoExcepcion e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ValorNoSoportadoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			g.drawLine(x+origenX, y+origenY, x2+origenX, y2+origenY);
 		}
 		

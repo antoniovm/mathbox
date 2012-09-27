@@ -14,6 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import fp.excepciones.ErrorSintacticoExcepcion;
+import fp.excepciones.OperadorIncorrectoExcepcion;
+import fp.excepciones.ParentesisDesbalanceadosExcepcion;
+
 public class Ventana extends JFrame implements  ActionListener,ChangeListener,MouseMotionListener,MouseListener{
 	private Grafica grafica;
 	private Parametros parametros;
@@ -75,8 +79,18 @@ public class Ventana extends JFrame implements  ActionListener,ChangeListener,Mo
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		parametros.getExpresion().setCadena(parametros.getTfExpresion().getText());
-		parametros.getExpresion().postFija();
+		try {
+			parametros.getExpresion().setCadena(parametros.getTfExpresion().getText());
+		} catch (ParentesisDesbalanceadosExcepcion e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (OperadorIncorrectoExcepcion e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ErrorSintacticoExcepcion e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		grafica.repaint();
 		
 	}

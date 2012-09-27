@@ -1,5 +1,8 @@
 package fp.src;
 
+import fp.excepciones.ErrorSintacticoExcepcion;
+import fp.excepciones.ValorNoSoportadoException;
+
 public class Funcion {
 	Expresion expresion;
 	
@@ -11,7 +14,7 @@ public class Funcion {
 		super();
 		expresion=e;
 	}
-	public double f(double x) {
+	public double f(MathChar x) throws ErrorSintacticoExcepcion, ValorNoSoportadoException {
 		return expresion.evaluar(x);
 	}
 	
